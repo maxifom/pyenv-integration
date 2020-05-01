@@ -1,0 +1,25 @@
+<idea-plugin>
+    <id>com.maxifom.pyenv-integration</id>
+    <name>PyEnv Integration</name>
+    <vendor email="fominykh.max@gmail.com" url="http://maxifom.com">maxifom</vendor>
+    <version>1.0.0</version>
+    <description><![CDATA[
+    This plugins help integrate PyEnv into IntelliJ IDEA
+    ]]></description>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <group id="com.maxifom.pyenv_integration" text="PyEnv" description="PyEnv Integration">
+            <add-to-group group-id="MainMenu" anchor="last"/>
+            <action class="com.maxifom.pyenv_integration.ListAction" id="com.maxifom.pyenv_integration.ListAction"
+                    text="List Versions"/>
+        </group>
+    </actions>
+</idea-plugin>
