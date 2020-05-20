@@ -16,10 +16,12 @@
     </extensions>
 
     <actions>
-        <group id="com.maxifom.pyenv_integration" text="PyEnv" description="PyEnv Integration">
+        <group id="com.maxifom.pyenv_integration" text="PyEnv" description="PyEnv integration">
             <add-to-group group-id="MainMenu" anchor="last"/>
             <action class="com.maxifom.pyenv_integration.ListAction" id="com.maxifom.pyenv_integration.ListAction"
                     text="List Versions"/>
+            <action class="com.maxifom.pyenv_integration.InstallAction" id="com.maxifom.pyenv_integration.InstallAction"
+                    text="Install Version"/>
         </group>
     </actions>
 </idea-plugin>
