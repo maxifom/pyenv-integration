@@ -1,16 +1,21 @@
 package com.maxifom.pyenv_integration
 
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.progress.runBackgroundableTask
 import com.intellij.openapi.ui.Messages
-import java.io.File
+import com.intellij.util.io.readCharSequence
+import java.io.BufferedReader
 import java.util.concurrent.TimeUnit
 
 class InstallAction : AnAction() {
     private var state: PluginState? = PluginSettings.getInstance().state
 
-    override fun actionPerformed(e: AnActionEvent) {
 
+    override fun actionPerformed(e: AnActionEvent) {
         val versions = mutableMapOf<String, Set<String>>()
         try {
             val pb = ProcessBuilder(state!!.pathToPyenv, "install", "--list")
@@ -74,11 +79,40 @@ class InstallAction : AnAction() {
 
         println("Chose python $name$version")
 
-        val pb = ProcessBuilder(state!!.pathToPyenv, "install", "$name$version")
-            .redirectOutput(File("/dev/stdout"))
-            .redirectError(File("/dev/stderr"))
-            .start()
-        pb.waitFor()
-        println(pb.inputStream.bufferedReader().readText())
+        runBackgroundableTask("Pyenv Install $name$version", e.project, false) {
+            val process = ProcessBuilder(state!!.pathToPyenv, "install123", "$name$version").start()
+            process.waitFor()
+            val exitValue = process.exitValue()
+
+            if (exitValue != 0) {
+                val sb = StringBuilder()
+                for (line in process.errorStream.bufferedReader().lines()) {
+                    sb.append(line)
+                }
+                println("Error installing python $name$version: $sb")
+
+                Notifications.Bus.notify(
+                    Notification(
+                        "pyenv-integration",
+                        "Python installation failed",
+                        "$sb",
+                        NotificationType.ERROR
+                    )
+                )
+
+                return@runBackgroundableTask
+            }
+
+
+            Notifications.Bus.notify(
+                Notification(
+                    "pyenv-integration",
+                    "Python installation finished",
+                    "Python $name$version installed",
+                    NotificationType.INFORMATION
+                ),
+                e.project
+            )
+        }
     }
 }
