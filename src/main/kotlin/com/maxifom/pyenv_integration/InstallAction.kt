@@ -7,12 +7,13 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 class InstallAction : AnAction() {
+    private var state: PluginState? = PluginSettings.getInstance().state
+
     override fun actionPerformed(e: AnActionEvent) {
 
-        var versions = mutableMapOf<String, Set<String>>()
+        val versions = mutableMapOf<String, Set<String>>()
         try {
-//            TODO: select dir
-            val pb = ProcessBuilder("/home/max/.pyenv/bin/pyenv", "install", "--list")
+            val pb = ProcessBuilder(state!!.pathToPyenv, "install", "--list")
                 .redirectOutput(ProcessBuilder.Redirect.PIPE)
                 .redirectError(ProcessBuilder.Redirect.PIPE)
                 .start()
@@ -73,7 +74,7 @@ class InstallAction : AnAction() {
 
         println("Chose python $name$version")
 
-        val pb = ProcessBuilder("/home/max/.pyenv/bin/pyenv", "install", "$name$version")
+        val pb = ProcessBuilder(state!!.pathToPyenv, "install", "$name$version")
             .redirectOutput(File("/dev/stdout"))
             .redirectError(File("/dev/stderr"))
             .start()

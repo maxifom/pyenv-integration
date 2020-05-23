@@ -12,12 +12,14 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <applicationService serviceImplementation="com.maxifom.pyenv_integration.PluginSettings"/>
     </extensions>
 
     <actions>
         <group id="com.maxifom.pyenv_integration" text="PyEnv" description="PyEnv integration">
             <add-to-group group-id="MainMenu" anchor="last"/>
+            <action class="com.maxifom.pyenv_integration.ChoosePyEnvPathAction" id="com.maxifom.pyenv_integration.ChoosePyEnvPathAction"
+                    text="Choose PyEnv Path"/>
             <action class="com.maxifom.pyenv_integration.ListAction" id="com.maxifom.pyenv_integration.ListAction"
                     text="List Versions"/>
             <action class="com.maxifom.pyenv_integration.InstallAction" id="com.maxifom.pyenv_integration.InstallAction"
