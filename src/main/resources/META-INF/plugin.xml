@@ -4,7 +4,7 @@
     <vendor email="fominykh.max@gmail.com" url="https://maxifom.com">maxifom</vendor>
     <version>0.0.1</version>
     <description><![CDATA[
-    This plugin help integrate PyEnv into IntelliJ IDEA
+    This plugin help integrate PyEnv into IntelliJ IDEA-based IDEs
     ]]></description>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html

@@ -11,8 +11,6 @@ class ListAction : AnAction() {
     private var state: PluginState? = PluginSettings.getInstance().state
 
     override fun actionPerformed(e: AnActionEvent) {
-
-        val re = Regex("\\d\\.\\d{1,2}\\.?\\d{0,2}", RegexOption.MULTILINE)
         val process = ProcessBuilder(state!!.pathToPyenv, "versions")
             .redirectOutput(ProcessBuilder.Redirect.PIPE)
             .redirectError(ProcessBuilder.Redirect.PIPE)
@@ -31,11 +29,32 @@ class ListAction : AnAction() {
             )
         }
 
-        var message = "Pyenv installed versions: \n"
-        for (matchResult in re.findAll(responseText)) {
-            message += matchResult.value + "\n"
+        val sb = StringBuilder("Pyenv installed versions: \n")
+        for (line in responseText.lineSequence()) {
+            if (line.contains("*")) {
+                continue
+            }
+            val vTrim = line.trim()
+            if (vTrim.contains("-dev")) {
+                continue
+            }
+            val splitted = vTrim.split("-")
+            var name = ""
+            var version: String
+            if (splitted.count() > 1) {
+                name = splitted[0]
+                version = splitted.subList(1, splitted.size).joinToString("-")
+            } else {
+                version = splitted[0]
+            }
+
+            if (name != "") {
+                name = "$name-"
+            }
+
+            sb.appendln("$name$version")
         }
 
-        Messages.showInfoMessage(e.project, message, "Pyenv installed versions")
+        Messages.showInfoMessage(e.project, sb.toString(), "Pyenv installed versions")
     }
 }
