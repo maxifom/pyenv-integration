@@ -67,8 +67,6 @@ class InstallAction : AnAction() {
             versions[name] = versions[name]!! + version
         }
 
-        println(versions)
-
         var name = Messages.showEditableChooseDialog(
             "Choose python branch to install",
             "Choose python branch",
@@ -81,8 +79,6 @@ class InstallAction : AnAction() {
         if (name == null) {
             return
         }
-
-        println("""Chose name $name""")
 
         val version = Messages.showEditableChooseDialog(
             "Choose $name Python version to install",
@@ -97,15 +93,11 @@ class InstallAction : AnAction() {
             return
         }
 
-        println("""Chose version $version""")
-
         if (name == "python.org") {
             name = ""
         } else {
             name += "-"
         }
-
-        println("Chose python $name$version")
 
         runBackgroundableTask("Pyenv Install $name$version", e.project, false) {
             val process: Process
@@ -128,8 +120,6 @@ class InstallAction : AnAction() {
 
             if (process.exitValue() != 0) {
                 val errorText = process.errorStream.bufferedReader().readText()
-
-                println("Error installing python $name$version: $errorText")
 
                 Notifications.Bus.notify(
                     Notification(

@@ -24,23 +24,18 @@ class ListAction : AnAction() {
             Notifications.Bus.notify(
                 Notification(
                     "pyenv-integration",
-                    "Pyenv installed version listing failed",
+                    "Pyenv installed versions listing failed",
                     responseText,
                     NotificationType.ERROR
                 )
             )
         }
 
-        var message = "Versions: \n"
+        var message = "Pyenv installed versions: \n"
         for (matchResult in re.findAll(responseText)) {
             message += matchResult.value + "\n"
         }
 
-        Messages.showMessageDialog(
-            e.project,
-            message,
-            "Pyenv installed versions",
-            Messages.getInformationIcon()
-        )
+        Messages.showInfoMessage(e.project, message, "Pyenv installed versions")
     }
 }

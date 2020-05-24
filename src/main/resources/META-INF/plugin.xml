@@ -1,10 +1,10 @@
 <idea-plugin>
     <id>com.maxifom.pyenv-integration</id>
     <name>PyEnv Integration</name>
-    <vendor email="fominykh.max@gmail.com" url="http://maxifom.com">maxifom</vendor>
-    <version>1.0.0</version>
+    <vendor email="fominykh.max@gmail.com" url="https://maxifom.com">maxifom</vendor>
+    <version>0.0.1</version>
     <description><![CDATA[
-    This plugins help integrate PyEnv into IntelliJ IDEA
+    This plugin help integrate PyEnv into IntelliJ IDEA
     ]]></description>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html

@@ -21,11 +21,9 @@ class ChoosePyEnvPathAction : AnAction() {
             withShowHiddenFiles(true)
         }
 
-        println(fileChooserDescriptor.isShowHiddenFiles)
-
         fileChooserDescriptor.chooseFile(e) {
             state!!.pathToPyenv = it.path
-            Messages.showMessageDialog(e.project, "Chose path${it.path}", "Path", Messages.getInformationIcon())
+            Messages.showMessageDialog(e.project, "Chose path ${it.path}", "Path", Messages.getInformationIcon())
         }
     }
 }
