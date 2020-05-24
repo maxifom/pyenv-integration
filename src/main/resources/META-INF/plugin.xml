@@ -7,7 +7,7 @@
     This plugin help integrate PyEnv into IntelliJ IDEA-based IDEs
     ]]></description>
     
-    <idea-version since-build="183.4284" until-build="201.*"/>
+    <idea-version since-build="183.*" until-build="201.*"/>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
