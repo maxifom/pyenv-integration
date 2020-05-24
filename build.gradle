@@ -16,7 +16,7 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version '2020.1'
+    version '2018.3'
 }
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
@@ -27,4 +27,6 @@ compileTestKotlin {
 patchPluginXml {
     changeNotes """
       Basic Pyenv integration in Linux: List versions and Install version. Compatible for 2018.3 and later"""
+    sinceBuild("183.0")
+    untilBuild()
 }
