@@ -16,11 +16,16 @@ class ChoosePyEnvPathAction : AnAction() {
             true, false, false, false, false, false
         )
 
-        fileChooserDescriptor.title = "Choose PyEnv executable Path"
+        fileChooserDescriptor.apply {
+            title = "Choose PyEnv executable path"
+            withShowHiddenFiles(true)
+        }
+
+        println(fileChooserDescriptor.isShowHiddenFiles)
 
         fileChooserDescriptor.chooseFile(e) {
             state!!.pathToPyenv = it.path
-            Messages.showMessageDialog(e.project, "Choosed path${it.path}", "Path", Messages.getInformationIcon())
+            Messages.showMessageDialog(e.project, "Chose path${it.path}", "Path", Messages.getInformationIcon())
         }
     }
 }

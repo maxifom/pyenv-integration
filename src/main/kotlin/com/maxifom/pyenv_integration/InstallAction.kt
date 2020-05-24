@@ -7,44 +7,64 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.progress.runBackgroundableTask
 import com.intellij.openapi.ui.Messages
-import com.intellij.util.io.readCharSequence
-import java.io.BufferedReader
-import java.util.concurrent.TimeUnit
+import java.lang.Exception
 
 class InstallAction : AnAction() {
     private var state: PluginState? = PluginSettings.getInstance().state
 
-
     override fun actionPerformed(e: AnActionEvent) {
         val versions = mutableMapOf<String, Set<String>>()
+
+        val listProcess: Process
         try {
-            val pb = ProcessBuilder(state!!.pathToPyenv, "install", "--list")
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .redirectError(ProcessBuilder.Redirect.PIPE)
-                .start()
-            pb.waitFor(5, TimeUnit.SECONDS)
-            val versionsText = pb.inputStream.bufferedReader().readLines()
-            for (v in versionsText.listIterator(1)) {
-                val vTrim = v.trim()
-                if (vTrim.contains("-dev")) {
-                    continue
-                }
-                val splitted = vTrim.split("-")
-                var name = "python.org"
-                var version: String
-                if (splitted.count() > 1) {
-                    name = splitted[0]
-                    version = splitted.subList(1, splitted.size).joinToString("-")
-                } else {
-                    version = splitted[0]
-                }
-
-
-                versions.putIfAbsent(name, setOf(version))
-                versions[name] = versions[name]!! + version
-            }
+            listProcess = ProcessBuilder(state!!.pathToPyenv, "install", "--list").start()
+            listProcess.waitFor()
         } catch (e: Exception) {
-            print("Exception listing pyenv versions: $e")
+            Notifications.Bus.notify(
+                Notification(
+                    "pyenv-integration",
+                    "Pyenv version listing failed",
+                    e.toString(),
+                    NotificationType.ERROR
+                )
+            )
+
+            return
+        }
+
+        if (listProcess.exitValue() != 0) {
+            val errorText = listProcess.errorStream.bufferedReader().readText()
+
+            Notifications.Bus.notify(
+                Notification(
+                    "pyenv-integration",
+                    "Pyenv version listing failed",
+                    errorText,
+                    NotificationType.ERROR
+                )
+            )
+            return
+        }
+
+        val versionsText = listProcess.inputStream.bufferedReader().readLines()
+        for (v in versionsText.listIterator(1)) {
+            val vTrim = v.trim()
+            if (vTrim.contains("-dev")) {
+                continue
+            }
+            val splitted = vTrim.split("-")
+            var name = "python.org"
+            var version: String
+            if (splitted.count() > 1) {
+                name = splitted[0]
+                version = splitted.subList(1, splitted.size).joinToString("-")
+            } else {
+                version = splitted[0]
+            }
+
+
+            versions.putIfAbsent(name, setOf(version))
+            versions[name] = versions[name]!! + version
         }
 
         println(versions)
@@ -58,6 +78,10 @@ class InstallAction : AnAction() {
             null
         )
 
+        if (name == null) {
+            return
+        }
+
         println("""Chose name $name""")
 
         val version = Messages.showEditableChooseDialog(
@@ -68,6 +92,10 @@ class InstallAction : AnAction() {
             versions[name]!!.first(),
             null
         )
+
+        if (version == null) {
+            return
+        }
 
         println("""Chose version $version""")
 
@@ -80,22 +108,34 @@ class InstallAction : AnAction() {
         println("Chose python $name$version")
 
         runBackgroundableTask("Pyenv Install $name$version", e.project, false) {
-            val process = ProcessBuilder(state!!.pathToPyenv, "install123", "$name$version").start()
-            process.waitFor()
-            val exitValue = process.exitValue()
+            val process: Process
+            try {
+                process = ProcessBuilder(state!!.pathToPyenv, "install", "$name$version").start()
+                process.waitFor()
+            } catch (e: Exception) {
+                Notifications.Bus.notify(
+                    Notification(
+                        "pyenv-integration",
+                        "Python installation failed",
+                        e.toString(),
+                        NotificationType.ERROR
+                    )
+                )
 
-            if (exitValue != 0) {
-                val sb = StringBuilder()
-                for (line in process.errorStream.bufferedReader().lines()) {
-                    sb.append(line)
-                }
-                println("Error installing python $name$version: $sb")
+                return@runBackgroundableTask
+            }
+
+
+            if (process.exitValue() != 0) {
+                val errorText = process.errorStream.bufferedReader().readText()
+
+                println("Error installing python $name$version: $errorText")
 
                 Notifications.Bus.notify(
                     Notification(
                         "pyenv-integration",
                         "Python installation failed",
-                        "$sb",
+                        errorText,
                         NotificationType.ERROR
                     )
                 )

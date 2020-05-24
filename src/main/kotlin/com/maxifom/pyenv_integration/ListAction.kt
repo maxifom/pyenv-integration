@@ -1,10 +1,11 @@
 package com.maxifom.pyenv_integration
 
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.Messages
-import java.io.File
-import java.util.concurrent.TimeUnit
 
 class ListAction : AnAction() {
     private var state: PluginState? = PluginSettings.getInstance().state
@@ -12,26 +13,33 @@ class ListAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
 
         val re = Regex("\\d\\.\\d{1,2}\\.?\\d{0,2}", RegexOption.MULTILINE)
-        var message = "No versions found"
-        try {
-            val pb = ProcessBuilder(state!!.pathToPyenv, "versions")
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .redirectError(ProcessBuilder.Redirect.PIPE)
-                .start()
-            pb.waitFor(5, TimeUnit.SECONDS)
-            val versionsText = pb.inputStream.bufferedReader().readText()
-            message = "Versions: \n"
-            for (matchResult in re.findAll(versionsText)) {
-                message += matchResult.value + "\n"
-            }
-        } catch (e: Exception) {
-            print(e)
+        val process = ProcessBuilder(state!!.pathToPyenv, "versions")
+            .redirectOutput(ProcessBuilder.Redirect.PIPE)
+            .redirectError(ProcessBuilder.Redirect.PIPE)
+            .start()
+        process.waitFor()
+        val responseText = process.inputStream.bufferedReader().readText()
+
+        if (process.exitValue() != 0) {
+            Notifications.Bus.notify(
+                Notification(
+                    "pyenv-integration",
+                    "Pyenv installed version listing failed",
+                    responseText,
+                    NotificationType.ERROR
+                )
+            )
+        }
+
+        var message = "Versions: \n"
+        for (matchResult in re.findAll(responseText)) {
+            message += matchResult.value + "\n"
         }
 
         Messages.showMessageDialog(
             e.project,
             message,
-            "Installed versions",
+            "Pyenv installed versions",
             Messages.getInformationIcon()
         )
     }
