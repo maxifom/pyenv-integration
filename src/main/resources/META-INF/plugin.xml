@@ -6,12 +6,14 @@
     <description><![CDATA[
     This plugin help integrate PyEnv into IntelliJ IDEA-based IDEs
     ]]></description>
-    
-    <idea-version since-build="183.*" until-build="201.*"/>
+
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
+
+
+    <idea-version since-build="183.*"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.maxifom.pyenv_integration.PluginSettings"/>
@@ -20,7 +22,8 @@
     <actions>
         <group id="com.maxifom.pyenv_integration" text="PyEnv" description="PyEnv integration">
             <add-to-group group-id="MainMenu" anchor="last"/>
-            <action class="com.maxifom.pyenv_integration.ChoosePyEnvPathAction" id="com.maxifom.pyenv_integration.ChoosePyEnvPathAction"
+            <action class="com.maxifom.pyenv_integration.ChoosePyEnvPathAction"
+                    id="com.maxifom.pyenv_integration.ChoosePyEnvPathAction"
                     text="Choose PyEnv Path"/>
             <action class="com.maxifom.pyenv_integration.ListAction" id="com.maxifom.pyenv_integration.ListAction"
                     text="List Versions"/>
