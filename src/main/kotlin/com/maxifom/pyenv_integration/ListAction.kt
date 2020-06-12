@@ -16,44 +16,22 @@ class ListAction : AnAction() {
             .redirectError(ProcessBuilder.Redirect.PIPE)
             .start()
         process.waitFor()
-        val responseText = process.inputStream.bufferedReader().readText()
 
         if (process.exitValue() != 0) {
+            val errorText = process.errorStream.bufferedReader().readText()
             Notifications.Bus.notify(
                 Notification(
                     "pyenv-integration",
                     "Pyenv installed versions listing failed",
-                    responseText,
+                    errorText,
                     NotificationType.ERROR
                 )
             )
         }
 
+        val versions = process.inputStream.bufferedReader().readLines()
         val sb = StringBuilder("Pyenv installed versions: \n")
-        for (line in responseText.lineSequence()) {
-            if (line.contains("*")) {
-                continue
-            }
-            val vTrim = line.trim()
-            if (vTrim.contains("-dev")) {
-                continue
-            }
-            val splitted = vTrim.split("-")
-            var name = ""
-            var version: String
-            if (splitted.count() > 1) {
-                name = splitted[0]
-                version = splitted.subList(1, splitted.size).joinToString("-")
-            } else {
-                version = splitted[0]
-            }
-
-            if (name != "") {
-                name = "$name-"
-            }
-
-            sb.appendln("$name$version")
-        }
+        sb.append(versions.joinToString("\n"))
 
         Messages.showInfoMessage(e.project, sb.toString(), "Pyenv installed versions")
     }

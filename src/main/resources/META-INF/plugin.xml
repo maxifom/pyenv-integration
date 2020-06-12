@@ -29,6 +29,8 @@
                     text="List Versions"/>
             <action class="com.maxifom.pyenv_integration.InstallAction" id="com.maxifom.pyenv_integration.InstallAction"
                     text="Install Version"/>
+            <action class="com.maxifom.pyenv_integration.UninstallAction" id="com.maxifom.pyenv_integration.UninstallAction"
+                    text="Uninstall Version"/>
         </group>
     </actions>
 
