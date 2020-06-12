@@ -1,3 +1,5 @@
+This plugin help integrate [PyEnv](https://github.com/pyenv/pyenv) into IntelliJ IDEA-based IDEs
+
 TODO:
 1. ~~Download version~~
 2. ~~List Versions~~
