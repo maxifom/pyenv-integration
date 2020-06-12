@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.maxifom'
-version '0.0.1-SNAPSHOT'
+version '0.0.2'
 
 repositories {
     mavenCentral()
@@ -26,7 +26,7 @@ compileTestKotlin {
 }
 patchPluginXml {
     changeNotes """
-      Basic Pyenv integration in Linux: List versions and Install version. Compatible for 2018.3 and later"""
+      Added uninstall action, changed install version list to full list of version instead of splitted list of versions by vendor."""
     sinceBuild("183.0")
     untilBuild()
 }

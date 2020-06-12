@@ -2,7 +2,7 @@
     <id>com.maxifom.pyenv-integration</id>
     <name>PyEnv Integration</name>
     <vendor email="fominykh.max@gmail.com" url="https://maxifom.com">maxifom</vendor>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <description><![CDATA[
     This plugin help integrate PyEnv into IntelliJ IDEA-based IDEs
     ]]></description>
