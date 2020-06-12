@@ -30,3 +30,6 @@ patchPluginXml {
     sinceBuild("183.0")
     untilBuild()
 }
+publishPlugin {
+    token = System.getenv("PUBLISH_TOKEN")
+}
