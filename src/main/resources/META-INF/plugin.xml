@@ -16,6 +16,7 @@
     <idea-version since-build="183.*"/>
 
     <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable instance="com.maxifom.pyenv_integration.ApplicationConfigurable"/>
         <applicationService serviceImplementation="com.maxifom.pyenv_integration.PluginSettings"/>
     </extensions>
 

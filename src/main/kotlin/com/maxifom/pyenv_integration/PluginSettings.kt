@@ -22,7 +22,7 @@ class PluginSettings : PersistentStateComponent<PluginState> {
 
     companion object {
         @JvmStatic
-        fun getInstance(): PersistentStateComponent<PluginState> {
+        fun getInstance(): PluginSettings {
             return ServiceManager.getService(PluginSettings::class.java)
         }
     }
